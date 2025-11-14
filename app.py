@@ -1,0 +1,97 @@
+from flask import Flask,jsonify,request
+from collections import OrderedDict
+import netflix
+import happiness
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "welcome to Netflix and World Happiness Report Dataset api service."
+
+#-----------------------------Netflix Dataset APIS-------------------------------------
+@app.route('/api/movie-tv-distribution', methods=['GET'])
+def movie_tv_distribution_api():
+    result = netflix.movie_tv_distributionAPI()
+    response = {
+        "message": "Distribution of Movies and TV Shows on Netflix (by count and percentage)",
+        "data": result
+    }
+    return jsonify(response)
+
+@app.route('/api/top-directors', methods=['GET'])
+def top_directors_api():
+    result = netflix.top_10_directorsAPI()
+    return jsonify(result)
+
+@app.route('/api/country-stats', methods=['GET'])
+def country_stats_api():
+    result = netflix.country_statsAPI()
+    
+    response = OrderedDict()
+    response["message"] = "Top 10 countries where Netflix is most used (by number of titles)"
+    response["total_countries"] = len(result)
+    response["data"] = result
+    
+    return jsonify(response)
+
+@app.route('/api/rating-distribution', methods=['GET'])
+def rating_distribution_api():
+    result = netflix.rating_distributionAPI()
+    response = {
+        "message": "Distribution of Netflix titles by rating type (in percentage)",
+        "total_ratings": len(result),
+        "data": result
+    }
+    return jsonify(response)
+
+#-----------------------------World Happiness Report Dataset APIs--------------------------------
+
+@app.route('/api/top-countries', methods=['GET'])
+def top_countries():
+    limit = int(request.args.get('limit', 10))
+    result = happiness.top_countriesAPI(limit)
+    return jsonify(result)
+
+@app.route('/api/factor-impact', methods=['GET'])
+def factor_impact():
+    result = happiness.factor_impactAPI()
+    return jsonify(result)
+
+@app.route('/api/country-info', methods=['GET'])
+def country_info():
+    name = request.args.get('name')
+    if not name:
+        return jsonify({"error": "Please provide ?name=country_name parameter."})
+    result = happiness.country_infoAPI(name)
+    return jsonify(result)
+
+@app.route('/api/compare-countries', methods=['GET'])
+def compare_countries():
+    c1 = request.args.get('country1')
+    c2 = request.args.get('country2')
+    if not c1 or not c2:
+        return jsonify({"error": "Please provide ?country1= and ?country2= parameters."})
+    result = happiness.compare_countriesAPI(c1, c2)
+    return jsonify(result)
+
+@app.route('/api/happiness-gap', methods=['GET'])
+def happiness_gap():
+    region = request.args.get('region')
+    result = happiness.happiness_gapAPI(region)
+    return jsonify(result)
+
+@app.route('/api/country-rank-trend', methods=['GET'])
+def country_rank_trend():
+    country = request.args.get('country')
+    result = happiness.country_rank_trendAPI(country)
+    return jsonify(result)  
+
+@app.route('/api/factor-averages', methods=['GET'])
+def factor_averages():
+    result = happiness.factor_averagesAPI()
+    return jsonify(result)
+
+app.run(debug=True)
+
+
