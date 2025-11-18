@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load dataset
-df = pd.read_csv("C:/Users/dell/Desktop/Major project/happiness.csv")
+df = pd.read_csv("C:/Users/dell/Desktop/Major project/data files/happiness.csv")
 
 # --- Data Cleaning ---
 def clean_data():

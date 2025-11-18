@@ -3,7 +3,71 @@ import numpy as np
 import random
 from datetime import datetime
 
-df = pd.read_csv('C:/Users/dell/Desktop/Major project/netflix_cleaned.csv')
+df = pd.read_csv('C:/Users/dell/Desktop/Major project/data files/netflix_cleaned.csv')
+
+def movie_by_titleAPI(title):
+    title = title.strip().lower()
+    
+    movie = df[(df['type'].str.lower() == 'movie') &
+               (df['title'].str.lower() == title)]
+    
+    if movie.empty:
+        return {
+            "message": f"No movie found with title '{title}'."
+        }
+    row = movie.iloc[0]
+    
+    row_dict = row.to_dict()
+    # convert numpy.int64 to python int
+    for key,value in row_dict.items():
+        if isinstance(value ,(np.int64,np.float64)):
+            row_dict[key] = int(value)
+    return {
+        "message": f"Movie details for '{row_dict['title']}'",
+        "data": {
+            "title": row_dict.get("title"),
+            "main_director": row_dict.get("Main_director"),
+            "cast": row_dict.get("cast"),
+            "country": row_dict.get("country"),
+            "release_year": row_dict.get("release_year"),
+            "rating": row_dict.get("rating"),
+            "duration": row_dict.get("duration"),
+            "genres": row_dict.get("genres"),
+            "description": row_dict.get("description")
+        }
+    }
+
+def tvshow_by_titleAPI(title):
+    title = title.strip().lower()
+    
+    show = df[(df['type'].str.lower() == 'tv show') &
+               (df['title'].str.lower() == title)]
+    
+    if show.empty:
+        return {
+            "message": f"No tv show found with title '{title}'."
+        }
+    row = show.iloc[0]
+    
+    row_dict = row.to_dict()
+    # convert numpy.int64 to python int
+    for key,value in row_dict.items():
+        if isinstance(value ,(np.int64,np.float64)):
+            row_dict[key] = int(value)
+    return {
+        "message": f"Movie details for '{row_dict['title']}'",
+        "data": {
+            "title": row_dict.get("title"),
+            "main_director": row_dict.get("Main_director"),
+            "cast": row_dict.get("cast"),
+            "country": row_dict.get("country"),
+            "release_year": row_dict.get("release_year"),
+            "rating": row_dict.get("rating"),
+            "duration": row_dict.get("duration"),
+            "genres": row_dict.get("genres"),
+            "description": row_dict.get("description")
+        }
+    }
 
 def movie_tv_distributionAPI():
     """
@@ -75,7 +139,7 @@ def clean_rating_column():
         'TV-MA', 'TV-14', 'TV-PG', 'TV-Y7', 'TV-Y', 'R', 'PG-13',
         'PG', 'G', 'NC-17', 'NR', 'UR', 'Unspecified'
     ]
-
+    
     # Replace anything that looks like a duration (e.g., '74 min', '120 min', '1 Season')
     df['rating'] = df['rating'].apply(lambda x: x if x in valid_ratings else 'Unspecified')
 
@@ -86,7 +150,7 @@ def rating_distributionAPI():
     Returns the percentage distribution of titles based on their rating type
     (like TV-MA, TV-14, PG-13, etc.)
     """
-
+    
     # Handle missing values
     df['rating'] = df['rating'].fillna('Unspecified').astype(str)
 

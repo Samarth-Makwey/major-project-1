@@ -2,14 +2,26 @@ from flask import Flask,jsonify,request
 from collections import OrderedDict
 import netflix
 import happiness
+import energy
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "welcome to Netflix and World Happiness Report Dataset api service."
+    return "welcome to Netflix, World Happiness Report and Global Energy Comsumption Dataset API service."
 
 #-----------------------------Netflix Dataset APIS-------------------------------------
+
+@app.route("/api/movie-title")
+def movie_title():
+    title = request.args.get("title")
+    return jsonify(netflix.movie_by_titleAPI(title))
+
+@app.route("/api/tv-title")
+def tv_title():
+    title = request.args.get("title")
+    return jsonify(netflix.tvshow_by_titleAPI(title))
+
 @app.route('/api/movie-tv-distribution', methods=['GET'])
 def movie_tv_distribution_api():
     result = netflix.movie_tv_distributionAPI()
@@ -91,6 +103,37 @@ def country_rank_trend():
 def factor_averages():
     result = happiness.factor_averagesAPI()
     return jsonify(result)
+
+#-----------------------Global Energy Consumption dataset APIs----------------------------
+
+@app.route("/api/global-summary")
+def global_summary():
+    return jsonify(energy.global_energy_summaryAPI())
+
+@app.route("/api/renewable-leaders")
+def renewable_leaders():
+    limit = int(request.args.get("limit", 10))
+    return jsonify(energy.renewable_leadersAPI(limit))
+
+@app.route("/api/cleanest-country")
+def cleanest():
+    limit = int(request.args.get("limit", 10))
+    return jsonify(energy.cleanest_countriesAPI(limit))
+
+@app.route("/api/compare-price")
+def compare_price():
+    c1 = request.args.get("country1")
+    c2 = request.args.get("country2")
+    return jsonify(energy.energy_price_comparisonAPI(c1, c2))
+
+@app.route("/api/energy-mix")
+def energy_mix():
+    country = request.args.get("country")
+    return jsonify(energy.energy_mixAPI(country))
+
+@app.route("/api/factor-summary")
+def factor_summary():
+    return jsonify(energy.factor_summaryAPI())
 
 app.run(debug=True)
 
