@@ -1,0 +1,36 @@
+.features {
+  margin-top: 60px;
+  padding: 20px;
+  text-align: center;
+}
+
+.feature-grid {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.feature-card {
+  background: white;
+  padding: 25px;
+  width: 250px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.feature-card .emoji {
+  font-size: 40px;
+}
+
+.feature-card h3 {
+  margin-top: 15px;
+  font-size: 20px;
+}
+
+.feature-card p {
+  margin-top: 10px;
+  color: #4b5563;
+}
