@@ -3,7 +3,7 @@ import numpy as np
 import random
 from datetime import datetime
 
-df = pd.read_csv('C:/Users/dell/Desktop/Major project/data files/netflix_cleaned.csv')
+df = pd.read_csv('C:/Users/dell/Desktop/Major project/data/netflix_cleaned.csv')
 
 def movie_by_titleAPI(title):
     title = title.strip().lower()

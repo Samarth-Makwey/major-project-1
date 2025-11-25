@@ -12,12 +12,12 @@ def home():
 
 #-----------------------------Netflix Dataset APIS-------------------------------------
 
-@app.route("/api/movie-title")
+@app.route('/api/movie-title')
 def movie_title():
     title = request.args.get("title")
     return jsonify(netflix.movie_by_titleAPI(title))
 
-@app.route("/api/tv-title")
+@app.route('/api/tv-title')
 def tv_title():
     title = request.args.get("title")
     return jsonify(netflix.tvshow_by_titleAPI(title))
@@ -26,7 +26,7 @@ def tv_title():
 def movie_tv_distribution_api():
     result = netflix.movie_tv_distributionAPI()
     response = {
-        "message": "Distribution of Movies and TV Shows on Netflix (by count and percentage)",
+        "message": "Distribution of Movies and TV Shows on Netflix",
         "data": result
     }
     return jsonify(response)
@@ -41,10 +41,7 @@ def country_stats_api():
     result = netflix.country_statsAPI()
     
     response = OrderedDict()
-    response["message"] = "Top 10 countries where Netflix is most used (by number of titles)"
-    response["total_countries"] = len(result)
     response["data"] = result
-    
     return jsonify(response)
 
 @app.route('/api/rating-distribution', methods=['GET'])
@@ -52,7 +49,6 @@ def rating_distribution_api():
     result = netflix.rating_distributionAPI()
     response = {
         "message": "Distribution of Netflix titles by rating type (in percentage)",
-        "total_ratings": len(result),
         "data": result
     }
     return jsonify(response)

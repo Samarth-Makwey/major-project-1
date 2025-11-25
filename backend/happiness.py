@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load dataset
-df = pd.read_csv("C:/Users/dell/Desktop/Major project/data files/happiness.csv")
+df = pd.read_csv("C:/Users/dell/Desktop/Major project/data/happiness.csv")
 
 # --- Data Cleaning ---
 def clean_data():
@@ -18,7 +18,7 @@ def clean_data():
 
 clean_data()
 
-def top_countriesAPI(limit=10):
+def top_countriesAPI(limit=8):
     result = (
         df[['Country', 'Region', 'Happiness Rank', 'Happiness Score']]
         .sort_values(by='Happiness Score', ascending=False)
@@ -26,12 +26,15 @@ def top_countriesAPI(limit=10):
         .reset_index(drop=True)
     )
     return {
-        "message": f"Top {limit} happiest countries in the world (by Happiness Score)",
         "data": result.to_dict(orient='records')
     }
 
 def factor_impactAPI():
     numeric_df = df.select_dtypes(include='number')
+        # Columns to exclude from result
+    remove_cols = ['Happiness Rank', 'Standard Error', 'Dystopia Residual']
+    numeric_df = numeric_df.drop(columns=[c for c in remove_cols if c in numeric_df.columns])
+
     corr = numeric_df.corr()['Happiness Score'].sort_values(ascending=False)
     result = [
         {"factor": k, "correlation_with_happiness": round(v, 3)}

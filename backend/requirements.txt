@@ -1,5 +1,6 @@
 flask 
 pandas
-matplotlib
-seaborn
 numpy
+jsonify
+request
+OrderedDict

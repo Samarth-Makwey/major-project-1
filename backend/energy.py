@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load dataset
-df = pd.read_csv("C:/Users/dell/Desktop/Major project/data files/global_energy_consumption.csv")
+df = pd.read_csv("C:/Users/dell/Desktop/Major project/data/global_energy_consumption.csv")
 
 # CLEANING FUNCTION
 def clean_energy_data():
