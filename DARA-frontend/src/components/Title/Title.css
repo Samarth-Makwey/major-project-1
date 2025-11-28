@@ -1,6 +1,5 @@
 
 .hero {
-	margin-top: 60px;
 	padding: 40px;
 	box-sizing: border-box;
 }
@@ -25,7 +24,7 @@
 }
 
 .hero-image img {
-	max-width: 100%;
+	max-width: 90%;
 	height: auto;
 	border-radius: 16px;
 	box-shadow: 0 10px 40px rgba(99, 102, 241, 0.15);

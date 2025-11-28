@@ -24,6 +24,7 @@
   list-style: none;
   font-size: 16px;
   cursor: pointer;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 .nav-links li:hover {
   color: #6366f1;
