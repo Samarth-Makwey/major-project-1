@@ -18,7 +18,7 @@ function Title() {
             </p>
 
             <div className="hero-ctas">
-              <a className="btn btn-primary" href="#get-started">Get started</a>
+              <a className="btn btn-primary" href="/datasets">Get started</a>
               
             </div>
           </div>

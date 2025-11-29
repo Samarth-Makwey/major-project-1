@@ -6,9 +6,9 @@ export default function Navbar() {
       <div className="logo">DARA</div>
 
       <ul className="nav-links">
-        <li>Home</li>
-        <li>Datasets</li>
-        <li>About</li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/datasets">Datasets</a></li>
+        <li><a href="/about">About</a></li>
       </ul>
     </nav>
   );
