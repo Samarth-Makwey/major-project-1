@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App.jsx'
 import AboutPage from './views/About/About.jsx'
+import DatasetsPage from './views/Datasets/Datasets.jsx'
+import DatasetDetail from './views/Datasets/DatasetDetail.jsx'
 
 // Mount the React app into the #root element in index.html
 const container = document.getElementById('root')
@@ -14,6 +16,8 @@ root.render(
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<App />} />
+				<Route path="/datasets" element={<DatasetsPage />} />
+				<Route path="/datasets/:id" element={<DatasetDetail />} />
 				<Route path="/about" element={<AboutPage />} />
 			</Routes>
 		</BrowserRouter>
