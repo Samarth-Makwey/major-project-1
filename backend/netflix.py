@@ -1,7 +1,17 @@
 import pandas as pd
-import numpy as np 
+import numpy as np
+import os
 
-df = pd.read_csv('C:/Users/dell/Desktop/Major project/data/netflix_cleaned.csv')
+# Resolve path relative to backend folder -> ../data/netflix_cleaned.csv
+csv_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'netflix_cleaned.csv'))
+if os.path.exists(csv_path):
+    df = pd.read_csv(csv_path)
+else:
+    # Fallback: try to read from current directory or set empty DataFrame
+    try:
+        df = pd.read_csv('netflix_cleaned.csv')
+    except Exception:
+        df = pd.DataFrame()
 
 def movie_by_titleAPI(title):
     title = title.strip().lower()

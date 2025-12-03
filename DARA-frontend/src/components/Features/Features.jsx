@@ -1,8 +1,8 @@
 import "./Features.css"
-import secureImg from "../../assets/secure.png";
 import apiImg from "../../assets/api.png";
 import schemaImg from "../../assets/schema.png";
 import dataImg from "../../assets/data.png";
+import docsImg from "../../assets/documentation.png";
 
 export default function Features() {
   return (
@@ -26,6 +26,12 @@ export default function Features() {
           <span ><img className="emoji" src={schemaImg} alt="Unified schema" /></span>
           <h3>Unified schema</h3>
           <p>Consistent, typed responses across endpoints</p>
+        </div>
+
+         <div className="feature-card">
+          <span ><img className="emoji" src={docsImg} alt="API Documentation" /></span>
+          <h3>API Documentation</h3>
+          <p>Comprehensive and easy-to-use API documentation for all endpoints.</p>
         </div>
 
       </div>

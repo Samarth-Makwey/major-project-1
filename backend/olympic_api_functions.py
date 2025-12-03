@@ -2,9 +2,17 @@ import pandas as pd
 import numpy as np
 from collections import Counter
 import json
+import os
 
-# Load the dataset
-df = pd.read_csv('athlete_events.csv')
+# Load the dataset (use backend/athlete_events.csv)
+data_path = os.path.join(os.path.dirname(__file__), 'athlete_events.csv')
+if os.path.exists(data_path):
+    df = pd.read_csv(data_path)
+else:
+    try:
+        df = pd.read_csv('athlete_events.csv')
+    except Exception:
+        df = pd.DataFrame()
 
 # ==========================================
 # 1. MEDAL TALLY & COUNTRY PERFORMANCE

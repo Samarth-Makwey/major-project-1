@@ -27,6 +27,25 @@ const datasets = [
     icon: '🎬',
     tags: ['Entertainment']
   }
+  ,
+  {
+    id: 4,
+    name: 'Olympic Games Dataset',
+    description: 'Historical Olympic athlete & results data (1896-2016) with medals, participants and event details.',
+    records: 271116,
+    updated: '2025-12-03',
+    icon: '🏅',
+    tags: ['Olympics', 'Sports', 'Historical']
+  },
+  {
+    id: 5,
+    name: 'IPL Matches & Ball-by-Ball',
+    description: 'Indian Premier League ball-by-ball and match-level data (2008-2022) containing player and team stats.',
+    records: 50000,
+    updated: '2024-10-05',
+    icon: '🏏',
+    tags: ['Cricket', 'Sports', 'IPL']
+  }
 ];
 
 export default datasets;

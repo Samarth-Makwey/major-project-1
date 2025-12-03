@@ -3,9 +3,17 @@ import numpy as np
 from collections import Counter, defaultdict
 import json
 import re
+import os
 
-# Load dataset
-df = pd.read_csv("athlete_events.csv")
+# Load dataset (use backend/athlete_events.csv)
+data_path = os.path.join(os.path.dirname(__file__), 'athlete_events.csv')
+if os.path.exists(data_path):
+    df = pd.read_csv(data_path)
+else:
+    try:
+        df = pd.read_csv('athlete_events.csv')
+    except Exception:
+        df = pd.DataFrame()
 
 # ==========================================
 # 11. NAME ANALYSIS

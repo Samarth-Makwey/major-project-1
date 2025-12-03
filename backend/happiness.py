@@ -1,7 +1,15 @@
 import pandas as pd
+import os
 
-# Load dataset
-df = pd.read_csv("C:/Users/dell/Desktop/Major project/data/happiness.csv")
+# Load dataset (resolve relative path to project data folder)
+csv_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'happiness.csv'))
+if os.path.exists(csv_path):
+    df = pd.read_csv(csv_path)
+else:
+    try:
+        df = pd.read_csv('happiness.csv')
+    except Exception:
+        df = pd.DataFrame()
 
 # --- Data Cleaning ---
 def clean_data():

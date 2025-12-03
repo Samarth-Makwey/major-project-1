@@ -1,5 +1,9 @@
-from flask import Flask,jsonify,request
+from flask import Flask, jsonify, request
 from collections import OrderedDict
+from flask_cors import CORS
+import pandas as pd
+import os
+
 import netflix
 import happiness
 import energy
@@ -54,8 +58,13 @@ from olympic_advanced_insights import (
 app = Flask(__name__)
 CORS(app)
 
-# Load dataset globally
-df = pd.read_csv('athlete_events.csv')
+# Load dataset globally (use a file in the backend folder)
+data_path = os.path.join(os.path.dirname(__file__), 'athlete_events.csv')
+if os.path.exists(data_path):
+    df = pd.read_csv(data_path)
+else:
+    # Fallback to an empty DataFrame to avoid immediate crashes; endpoints should handle empty df.
+    df = pd.DataFrame()
 
 # ==========================================
 # ROOT & INFO ENDPOINTS
@@ -556,7 +565,7 @@ def rating_distribution_api():
 #-----------------------------World Happiness Report Dataset APIs--------------------------------
 
 @app.route('/api/top-countries', methods=['GET'])
-def top_countries():
+def top_happiness_countries():
     limit = int(request.args.get('limit', 10))
     result = happiness.top_countriesAPI(limit)
     return jsonify(result)
@@ -630,6 +639,317 @@ def energy_mix():
 @app.route("/api/factor-summary")
 def factor_summary():
     return jsonify(energy.factor_summaryAPI())
+
+
+# ==========================================
+# DETAILED API DOCUMENTATION ENDPOINT
+# ==========================================
+
+@app.route('/api/docs/detailed', methods=['GET'])
+def detailed_docs():
+    """Comprehensive API documentation for all datasets"""
+    docs = {
+        "api_version": "1.0",
+        "title": "DARA - Data Analysis & Research API",
+        "description": "Multi-dataset API providing insights on Olympics, Netflix, World Happiness, Global Energy, and IPL",
+        "datasets": {
+            "olympics": {
+                "name": "Olympic Games Dataset",
+                "description": "Historical data from 1896-2016 Olympic Games with 271,116 records covering 135,571 athletes from 230 countries",
+                "endpoints": [
+                    {
+                        "path": "/api/medals/top-countries",
+                        "method": "GET",
+                        "description": "Get top performing countries of all time by medal count",
+                        "parameters": [{"name": "top_n", "type": "integer", "required": False, "default": 10, "description": "Number of top countries to return"}],
+                        "example_url": "/api/medals/top-countries?top_n=5",
+                        "sample_response": {"top_countries": [{"country": "USA", "gold": 1000, "silver": 750, "bronze": 650, "total": 2400}]}
+                    },
+                    {
+                        "path": "/api/medals/country/<noc>",
+                        "method": "GET",
+                        "description": "Get medal count for a specific country by year",
+                        "parameters": [{"name": "noc", "type": "string", "required": True, "description": "Country NOC code (e.g., USA, IND, CHN)"}, {"name": "year", "type": "integer", "required": False, "description": "Specific Olympic year"}],
+                        "example_url": "/api/medals/country/IND?year=2016",
+                        "sample_response": {"country": "IND", "medals_by_year": [{"year": 2016, "gold": 2, "silver": 4, "bronze": 8}]}
+                    },
+                    {
+                        "path": "/api/medals/rankings",
+                        "method": "GET",
+                        "description": "Get country rankings for a specific Olympics",
+                        "parameters": [{"name": "year", "type": "integer", "required": True, "description": "Olympic year"}, {"name": "season", "type": "string", "required": False, "default": "Summer", "description": "Summer or Winter"}],
+                        "example_url": "/api/medals/rankings?year=2016&season=Summer",
+                        "sample_response": {"year": 2016, "season": "Summer", "rankings": [{"rank": 1, "country": "USA", "gold": 46, "silver": 37, "bronze": 38, "total": 121}]}
+                    },
+                    {
+                        "path": "/api/athletes/top-decorated",
+                        "method": "GET",
+                        "description": "Get athletes with the most medals",
+                        "parameters": [{"name": "top_n", "type": "integer", "required": False, "default": 10, "description": "Number of athletes to return"}],
+                        "example_url": "/api/athletes/top-decorated?top_n=5",
+                        "sample_response": {"most_decorated_athletes": [{"id": 1, "name": "Michael Phelps", "team": "USA", "sex": "M", "total_medals": 28, "gold": 23, "silver": 3, "bronze": 2}]}
+                    },
+                    {
+                        "path": "/api/athletes/youngest-oldest",
+                        "method": "GET",
+                        "description": "Get youngest and oldest medalists in Olympic history",
+                        "parameters": [],
+                        "example_url": "/api/athletes/youngest-oldest",
+                        "sample_response": {"youngest": {"name": "Dimitrios Loundras", "age": 10}, "oldest": {"name": "Oscar Swahn", "age": 72}}
+                    },
+                    {
+                        "path": "/api/sports/physical-stats",
+                        "method": "GET",
+                        "description": "Get average physical stats (height, weight, age) by sport",
+                        "parameters": [{"name": "sport", "type": "string", "required": False, "description": "Specific sport name"}],
+                        "example_url": "/api/sports/physical-stats?sport=Basketball",
+                        "sample_response": {"sports": [{"sport": "Basketball", "avg_height": 198, "avg_weight": 100, "avg_age": 28}]}
+                    },
+                    {
+                        "path": "/api/sports/evolution",
+                        "method": "GET",
+                        "description": "Track how sports evolved over time (new/removed sports)",
+                        "parameters": [],
+                        "example_url": "/api/sports/evolution",
+                        "sample_response": {"sports_history": [{"decade": 1896, "new_sports": ["Athletics", "Swimming"], "removed_sports": []}]}
+                    },
+                    {
+                        "path": "/api/countries/participation-growth",
+                        "method": "GET",
+                        "description": "Track country participation growth across Olympics",
+                        "parameters": [],
+                        "example_url": "/api/countries/participation-growth",
+                        "sample_response": {"countries_growth": [{"country": "India", "first_olympics": 1900, "total_olympics": 27, "growth_trend": "increasing"}]}
+                    },
+                    {
+                        "path": "/api/demographics/gender-trend",
+                        "method": "GET",
+                        "description": "Get gender participation trends over time",
+                        "parameters": [],
+                        "example_url": "/api/demographics/gender-trend",
+                        "sample_response": {"gender_trend": [{"year": 2016, "male_athletes": 6500, "female_athletes": 4900}]}
+                    },
+                    {
+                        "path": "/api/host/cities",
+                        "method": "GET",
+                        "description": "Get list of Olympic host cities and years",
+                        "parameters": [],
+                        "example_url": "/api/host/cities",
+                        "sample_response": {"host_cities": [{"city": "Tokyo", "year": 2016, "season": "Summer", "country": "Japan"}]}
+                    },
+                    {
+                        "path": "/api/search/athlete",
+                        "method": "GET",
+                        "description": "Search for athletes by name",
+                        "parameters": [{"name": "name", "type": "string", "required": True, "description": "Athlete name or partial name"}],
+                        "example_url": "/api/search/athlete?name=Phelps",
+                        "sample_response": {"query": "Phelps", "total_results": 1, "athletes": [{"name": "Michael Phelps", "team": "USA", "total_medals": 28}]}
+                    }
+                ]
+            },
+            "netflix": {
+                "name": "Netflix Dataset",
+                "description": "Netflix content library with movies and TV shows, including ratings, genres, and directors",
+                "endpoints": [
+                    {
+                        "path": "/api/movie-title",
+                        "method": "GET",
+                        "description": "Get movie details by title",
+                        "parameters": [{"name": "title", "type": "string", "required": True, "description": "Exact movie title"}],
+                        "example_url": "/api/movie-title?title=Inception",
+                        "sample_response": {"title": "Inception", "main_director": "Christopher Nolan", "cast": "Leonardo DiCaprio, Marion Cotillard", "release_year": 2010, "rating": "PG-13"}
+                    },
+                    {
+                        "path": "/api/tv-title",
+                        "method": "GET",
+                        "description": "Get TV show details by title",
+                        "parameters": [{"name": "title", "type": "string", "required": True, "description": "Exact TV show title"}],
+                        "example_url": "/api/tv-title?title=Breaking%20Bad",
+                        "sample_response": {"title": "Breaking Bad", "main_director": "Vince Gilligan", "cast": "Bryan Cranston, Aaron Paul"}
+                    },
+                    {
+                        "path": "/api/movie-tv-distribution",
+                        "method": "GET",
+                        "description": "Get distribution of movies vs TV shows",
+                        "parameters": [],
+                        "example_url": "/api/movie-tv-distribution",
+                        "sample_response": {"data": [{"type": "Movie", "count": 6000, "percentage": 60.5}, {"type": "TV Show", "count": 3900, "percentage": 39.5}]}
+                    },
+                    {
+                        "path": "/api/top-directors",
+                        "method": "GET",
+                        "description": "Get top directors by number of titles",
+                        "parameters": [],
+                        "example_url": "/api/top-directors",
+                        "sample_response": {"data": [{"Main_director": "Rajiv Chilaka", "title_count": 14}, {"Main_director": "Steven Spielberg", "title_count": 9}]}
+                    },
+                    {
+                        "path": "/api/country-stats",
+                        "method": "GET",
+                        "description": "Get content distribution by country",
+                        "parameters": [],
+                        "example_url": "/api/country-stats",
+                        "sample_response": {"data": [{"country": "United States", "title_count": 3000}, {"country": "India", "title_count": 1200}]}
+                    },
+                    {
+                        "path": "/api/rating-distribution",
+                        "method": "GET",
+                        "description": "Get distribution of content ratings (TV-MA, PG-13, etc.)",
+                        "parameters": [],
+                        "example_url": "/api/rating-distribution",
+                        "sample_response": {"data": [{"rating": "TV-MA", "count": 2500, "percentage": 25.0}]}
+                    }
+                ]
+            },
+            "happiness": {
+                "name": "World Happiness Report Dataset",
+                "description": "World Happiness scores and contributing factors for countries across multiple years",
+                "endpoints": [
+                    {
+                        "path": "/api/top-countries",
+                        "method": "GET",
+                        "description": "Get top countries by happiness score",
+                        "parameters": [{"name": "limit", "type": "integer", "required": False, "default": 10, "description": "Number of countries to return"}],
+                        "example_url": "/api/top-countries?limit=5",
+                        "sample_response": {"data": [{"Country": "Finland", "Region": "Western Europe", "Happiness_Score": 7.769, "Happiness_Rank": 1}]}
+                    },
+                    {
+                        "path": "/api/factor-impact",
+                        "method": "GET",
+                        "description": "Get correlation of factors with happiness score",
+                        "parameters": [],
+                        "example_url": "/api/factor-impact",
+                        "sample_response": [{"factor": "Economy (GDP per Capita)", "correlation_with_happiness": 0.787}, {"factor": "Health (Life Expectancy)", "correlation_with_happiness": 0.743}]
+                    },
+                    {
+                        "path": "/api/country-info",
+                        "method": "GET",
+                        "description": "Get detailed happiness info for a specific country",
+                        "parameters": [{"name": "name", "type": "string", "required": True, "description": "Country name"}],
+                        "example_url": "/api/country-info?name=India",
+                        "sample_response": {"result": {"Country": "India", "Happiness_Score": 5.577, "Economy": 1.233, "Family": 1.081}}
+                    },
+                    {
+                        "path": "/api/compare-countries",
+                        "method": "GET",
+                        "description": "Compare happiness scores between two countries",
+                        "parameters": [{"name": "country1", "type": "string", "required": True}, {"name": "country2", "type": "string", "required": True}],
+                        "example_url": "/api/compare-countries?country1=India&country2=Finland",
+                        "sample_response": {"summary": {"more_happy_country": "Finland", "score_difference": 2.2}}
+                    },
+                    {
+                        "path": "/api/factor-averages",
+                        "method": "GET",
+                        "description": "Get global averages and extremes for happiness factors",
+                        "parameters": [],
+                        "example_url": "/api/factor-averages",
+                        "sample_response": [{"factor": "Economy (GDP per Capita)", "global_average": 0.95, "max_value": 1.85, "max_value_country": "Luxembourg"}]
+                    }
+                ]
+            },
+            "energy": {
+                "name": "Global Energy Consumption Dataset",
+                "description": "Energy consumption, renewable energy share, and carbon emissions data by country",
+                "endpoints": [
+                    {
+                        "path": "/api/global-summary",
+                        "method": "GET",
+                        "description": "Get global energy consumption summary",
+                        "parameters": [],
+                        "example_url": "/api/global-summary",
+                        "sample_response": {"summary": {"total_countries": 195, "highest_energy_country": "China", "global_avg_energy_consumption_TWh": 3.45, "global_avg_renewables_percent": 12.5}}
+                    },
+                    {
+                        "path": "/api/renewable-leaders",
+                        "method": "GET",
+                        "description": "Get countries leading in renewable energy",
+                        "parameters": [{"name": "limit", "type": "integer", "required": False, "default": 10, "description": "Number of countries to return"}],
+                        "example_url": "/api/renewable-leaders?limit=5",
+                        "sample_response": {"data": [{"Country": "Iceland", "Year": 2020, "Renewable Energy Share (%)": 98.5}]}
+                    },
+                    {
+                        "path": "/api/cleanest-country",
+                        "method": "GET",
+                        "description": "Get countries with lowest carbon emissions",
+                        "parameters": [{"name": "limit", "type": "integer", "required": False, "default": 10, "description": "Number of countries to return"}],
+                        "example_url": "/api/cleanest-country?limit=5",
+                        "sample_response": {"units": {"emissions": "Million Tons CO2"}, "data": [{"Country": "Bahrain", "Year": 2019, "Carbon Emissions (Million Tons)": 0.1}]}
+                    },
+                    {
+                        "path": "/api/compare-price",
+                        "method": "GET",
+                        "description": "Compare energy prices between two countries",
+                        "parameters": [{"name": "country1", "type": "string", "required": True}, {"name": "country2", "type": "string", "required": True}],
+                        "example_url": "/api/compare-price?country1=USA&country2=India",
+                        "sample_response": {"summary": {"higher_price_country": "USA", "difference_usd_per_kwh": 0.05}}
+                    },
+                    {
+                        "path": "/api/energy-mix",
+                        "method": "GET",
+                        "description": "Get energy source and usage breakdown for a country",
+                        "parameters": [{"name": "country", "type": "string", "required": True, "description": "Country name"}],
+                        "example_url": "/api/energy-mix?country=Norway",
+                        "sample_response": {"energy_source_breakdown": {"renewable_energy_share_percent": 95.5, "fossil_fuel_dependency_percent": 4.5}}
+                    },
+                    {
+                        "path": "/api/factor-summary",
+                        "method": "GET",
+                        "description": "Get summary stats for all energy factors",
+                        "parameters": [],
+                        "example_url": "/api/factor-summary",
+                        "sample_response": [{"factor": "Total Energy Consumption (TWh)", "average": 3.45, "maximum": 156.2, "max_country": "China"}]
+                    }
+                ]
+            },
+            "ipl": {
+                "name": "IPL (Indian Premier League) Dataset",
+                "description": "Cricket statistics from Indian Premier League (2008-2022)",
+                "endpoints": [
+                    {
+                        "path": "/api/allBatsmen-record",
+                        "method": "GET",
+                        "description": "Get all batsmen records and statistics",
+                        "parameters": [],
+                        "example_url": "/api/allBatsmen-record",
+                        "sample_response": {"batsmen": [{"name": "Virat Kohli", "runs": 6000, "matches": 150, "average": 45.5}]}
+                    },
+                    {
+                        "path": "/api/allBowlers-record",
+                        "method": "GET",
+                        "description": "Get all bowlers records and statistics",
+                        "parameters": [],
+                        "example_url": "/api/allBowlers-record",
+                        "sample_response": {"bowlers": [{"name": "Jasprit Bumrah", "wickets": 120, "matches": 100, "average": 25.3}]}
+                    },
+                    {
+                        "path": "/api/team-record",
+                        "method": "GET",
+                        "description": "Get team statistics",
+                        "parameters": [{"name": "team", "type": "string", "required": True, "description": "Team name"}],
+                        "example_url": "/api/team-record?team=Mumbai%20Indians",
+                        "sample_response": {"team": "Mumbai Indians", "wins": 80, "losses": 45, "win_percentage": 64.0}
+                    },
+                    {
+                        "path": "/api/batsman-record",
+                        "method": "GET",
+                        "description": "Get specific batsman statistics",
+                        "parameters": [{"name": "batsman", "type": "string", "required": True, "description": "Batsman name"}],
+                        "example_url": "/api/batsman-record?batsman=Virat%20Kohli",
+                        "sample_response": {"name": "Virat Kohli", "runs": 6000, "matches": 150, "centuries": 46, "average": 45.5}
+                    },
+                    {
+                        "path": "/api/bowler-record",
+                        "method": "GET",
+                        "description": "Get specific bowler statistics",
+                        "parameters": [{"name": "bowler", "type": "string", "required": True, "description": "Bowler name"}],
+                        "example_url": "/api/bowler-record?bowler=Jasprit%20Bumrah",
+                        "sample_response": {"name": "Jasprit Bumrah", "wickets": 120, "matches": 100, "economy": 7.2, "average": 25.3}
+                    }
+                ]
+            }
+        }
+    }
+    return jsonify(docs)
 
 
 # ==========================================

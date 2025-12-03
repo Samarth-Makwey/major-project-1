@@ -16,14 +16,14 @@ function AboutPage() {
           <section className="about-section">
             <h2>Our Mission</h2>
             <p>
-              We believe that quality data should be accessible to everyone. Our platform makes it easy for developers and businesses to discover, query, and integrate high-quality datasets through a single, developer-friendly API.
+              We believe that quality data analytics should be accessible to everyone. Our platform makes it easy for developers and businesses to discover, query, and integrate high-quality datasets through a single, developer-friendly API.
             </p>
           </section>
 
           <section className="about-section">
             <h2>What We Offer</h2>
             <ul>
-              <li>✓ Clean, well-structured datasets</li>
+              <li>✓ Well-structured analyzed APIs for datasets</li>
               <li>✓ Fast and reliable RESTful APIs</li>
               <li>✓ Comprehensive documentation</li>
             </ul>
@@ -32,7 +32,7 @@ function AboutPage() {
           <section className="about-section">
             <h2>Our Technology</h2>
             <p>
-              Built with modern technologies including Python, Pandas for data processing, and a robust REST API architecture. We ensure reliability, scalability, and performance across all our services.
+              Built with modern technologies including Python, Pandas for data processing, and a robust REST API architecture.
             </p>
           </section>
 
