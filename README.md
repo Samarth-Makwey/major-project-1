@@ -289,8 +289,6 @@ For complete endpoint documentation with parameters and examples, visit:
 
 ### API Documentation
 ![Documentation](./ss/Screenshot%202025-12-04%20121327.png)
-
-### About Page
 ![About](./ss/Screenshot%202025-12-04%20121405.png)
 
 ---
